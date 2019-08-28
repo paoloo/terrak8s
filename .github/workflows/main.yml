@@ -10,7 +10,7 @@ jobs:
       uses: actions/checkout@v1
 
     - name: tf init
-      uses: "hashicorp/terraform-github-actions/init@v0.3.6"
+      uses: "hashicorp/terraform-github-actions/init@v0.1.4"
 
     - name: tf verify
-      uses: "hashicorp/terraform-github-actions/validate@v0.3.6"
+      uses: "hashicorp/terraform-github-actions/validate@v0.1.4"
