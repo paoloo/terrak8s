@@ -74,20 +74,20 @@ resource "null_resource" "kops" {
   triggers {
       rerun = "${uuid()}"
   }
+
   provisioner "local-exec" {
     command = "kops create cluster --name=${var.cluster_name}.${var.tl_domain} --cloud=aws --zones=${module.k8s-vpc.azs[0]},${module.k8s-vpc.azs[1]} --master-size=${var.master_instance_size} --node-count=${var.node_count} --node-size=${var.node_instance_size} --master-zones=${module.k8s-vpc.azs[0]}  --state=s3://${aws_s3_bucket.k8s-state.id} --kubernetes-version ${var.kubernetes_version}   --out=kops-outputs --target=terraform"
   }
-  depends_on = ["aws_s3_bucket.k8s-state","aws_route53_zone.private"]
 
   provisioner "local-exec" {
     command = "cd ./kops-outputs && terraform init && echo \"yes\" | terraform apply && echo \"K8s cluster started. Wait some minutes before login to it.\" && sleep 420"
   }
-  depends_on = ["aws_s3_bucket.k8s-state","aws_route53_zone.private"]
 
   provisioner "local-exec" {
     when    = "destroy"
     command = "cd ./kops-outputs && echo \"yes\" | terraform destroy"
   }
+
   depends_on = ["aws_s3_bucket.k8s-state","aws_route53_zone.private"]
 
 }
